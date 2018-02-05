@@ -1,0 +1,46 @@
+@border-color: #7ebc6f;
+
+#navbar {
+    height: 100%;
+    cursor: pointer;
+
+    >ul {
+        height: 100%;
+        border: 1px solid @border-color;
+        border-radius: 3px;
+        display: inline-block;
+        box-sizing: border-box;
+
+        >li {
+            height: 100%;
+            border-right: 1px solid @border-color;
+            display: inline-block;
+
+            a {
+                box-sizing: border-box;
+                height: 100%;
+                line-height: 180%;
+                color: @border-color;
+            }
+
+            a:hover {
+                background: rgba(126, 188, 111, .3);
+            }
+
+            a.active {
+                background: rgb(126, 188, 111);
+                color: #fff;
+            }
+
+            a.tab {
+                display: inline-block;
+                font-weight: normal;
+                padding: 5px 15px;
+            }
+        }
+
+        >li:last-child {
+            border-right: 0;
+        }
+    }
+}

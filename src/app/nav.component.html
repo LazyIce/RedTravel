@@ -1,0 +1,19 @@
+<nav id="navbar">
+    <ul>
+        <li id="edit-tab" class="dropdown fl">
+            <a class="tab geolink editlink">编辑</a>
+        </li>
+        <li id="all-tab" class="fl">
+            <a class="tab geolink" (click)="onActive('all-tab')" [class.active]="isActive == 0">全部足迹</a>
+        </li>
+        <li id="not-tab" class="fl">
+            <a class="tab geolink" (click)="onActive('not-tab')" [class.active]="isActive == 1">未去过的足迹</a>
+        </li>
+        <li id="history-tab" class="fl">
+            <a class="tab geolink" (click)="onActive('history-tab')" [class.active]="isActive == 2">我的足迹</a>
+        </li>
+        <li id="share-tab" class="fl">
+            <a class="tab geolink">分享</a>
+        </li>
+    </ul>
+</nav>

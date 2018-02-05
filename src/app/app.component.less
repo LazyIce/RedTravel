@@ -1,0 +1,44 @@
+#header {
+    position: relative;
+    height: 55px;
+    font-size: 14px;
+    z-index: 1001;
+
+    >* {
+        display: inline-block;
+        height: 100%;
+        box-sizing: border-box;
+    }
+
+    #logo-wrap {
+        padding: 12.5px;
+        a { 
+            img {
+                width: 30px;
+                height: 30px;
+                display: inline-block;
+                vertical-align: middle;
+            }
+
+            span {
+                vertical-align: middle;
+                font-size: 20px;
+                font-weight: bolder;
+            }
+        }
+    }
+
+    app-navbar {
+        position: absolute;
+        right: 0;
+        padding: 10px;
+    }
+}
+
+#content {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
