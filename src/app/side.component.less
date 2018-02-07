@@ -1,0 +1,54 @@
+#sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #fefefe;
+    width: 320px;
+
+    #search-box{
+        width: calc(~"100% - 20px");
+        height: 40px;
+        padding: 5px;
+        margin: 10px;
+        border: 1px solid #ccc;
+
+        &:focus {
+            border: 2px solid steelblue;
+        }
+    }
+
+    #search-box::-ms-clear { display: none; }
+    #search-box:valid + .clear { display: inline; }
+
+    .clear { 
+        display: none; 
+        position: absolute; 
+        top: 22px;
+        left: 285px;
+        width: 16px; 
+        height: 16px; 
+        background: url('./../assets/images/clear.png');
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    #redspot-list {
+        .redspot-item {
+            margin: 10px;
+            width: calc(~"100% - 20px");
+            height: 40px;
+            line-height: 30px;
+            padding: 5px;
+            background-color: #eee;
+            cursor: pointer;
+            box-sizing: border-box;
+
+            &:hover, &.selected {
+                color: #eee;
+                background-color: #7ebc6f;
+            }
+        }
+    }
+}

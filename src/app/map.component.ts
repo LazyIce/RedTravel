@@ -1,6 +1,7 @@
-import { Component, AfterViewInit} from '@angular/core';
+import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import { Redspot } from './redspot';
 import { RedspotService } from './redspot.service';
+import { SideComponent } from './side.component';
 
 @Component({
     selector: 'app-map',
@@ -9,9 +10,13 @@ import { RedspotService } from './redspot.service';
     providers: [RedspotService]
 })
 export class MapComponent implements AfterViewInit {
-    redspots: Redspot[];
+    notRedspots: Redspot[];
     myRedspots: Redspot[];
     mymap: any;
+    notMarkerList;
+    myMarkerList;
+    @ViewChild(SideComponent)
+    private side: SideComponent;
 
     constructor(private redspotService: RedspotService) {
     }
@@ -35,11 +40,11 @@ export class MapComponent implements AfterViewInit {
         /* get data and add marker&infoWindow */
         this.redspotService.getRedspots()
             .then(redspots => {
-                this.redspots = redspots.filter(function(d) {
-                    return d.status === 0;
+                this.notRedspots = redspots.filter((redspot) => {
+                    return redspot.status === 0;
                 });
-                this.myRedspots = redspots.filter(function(d) {
-                    return d.status === 1;
+                this.myRedspots = redspots.filter((redspot) => {
+                    return redspot.status === 1;
                 });
                 this.addAllMarkers();
             });
@@ -55,10 +60,10 @@ export class MapComponent implements AfterViewInit {
         let self = this;
         this.mymap.clearMap();
         AMapUI.loadUI(['overlay/AwesomeMarker', 'overlay/SimpleInfoWindow'], function(AwesomeMarker, SimpleInfoWindow) {
-            for (let i = 0; i < self.redspots.length; i++) {
+            for (let i = 0; i < self.notRedspots.length; i++) {
                 let marker = new AwesomeMarker({
                     map: self.mymap,
-                    position: [self.redspots[i].geo.lng, self.redspots[i].geo.lat],
+                    position: [self.notRedspots[i].geo.lng, self.notRedspots[i].geo.lat],
                     awesomeIcon: 'star',
                     iconLabel: {
                         style: {
@@ -67,12 +72,12 @@ export class MapComponent implements AfterViewInit {
                     },
                     iconStyle: 'red',
                     animation: 'AMAP_ANIMATION_DROP',
-                    extData: self.redspots[i].name
+                    extData: self.notRedspots[i].name
                 });
                 /* add click infoWindow */
                 let infoWindow = new SimpleInfoWindow({
-                    infoTitle: '<h style="color:steelblue; margin:0 10px;">' + self.redspots[i].name + '</h>',
-                    infoBody: '<p style="font-size:0.9rem; margin:5px 10px;">' + self.redspots[i].intro + '</p>' + '<img src=\"' + self.redspots[i].img + '\" \>',
+                    infoTitle: '<h style="color:steelblue; margin:0 10px;">' + self.notRedspots[i].name + '</h>',
+                    infoBody: '<p style="font-size:0.9rem; margin:5px 10px;">' + self.notRedspots[i].intro + '</p>' + '<img src=\"' + self.notRedspots[i].img + '\" \>',
                     offset: new AMap.Pixel(0, -30),
                     autoMove: true,
                     closeWhenClickMap: true
@@ -82,7 +87,7 @@ export class MapComponent implements AfterViewInit {
                 });
                 /* add hover infoWindow */
                 let titleWindow = new AMap.InfoWindow({
-                    content: '<h style="color:steelblue;">' + self.redspots[i].name + '</h>',
+                    content: '<h style="color:steelblue;">' + self.notRedspots[i].name + '</h>',
                     offset: new AMap.Pixel(0, -30)
                 });
                 marker.on('mouseover', function() {
@@ -122,8 +127,8 @@ export class MapComponent implements AfterViewInit {
                 });
                 /* add click infoWindow */
                 let infoWindow = new SimpleInfoWindow({
-                    infoTitle: '<h style="color:steelblue; margin:0 10px;">' + self.redspots[i].name + '</h>',
-                    infoBody: '<p style="font-size:0.9rem; margin:5px 10px;">' + self.redspots[i].intro + '</p>' + '<img src=\"' + self.redspots[i].img + '\" \>',
+                    infoTitle: '<h style="color:steelblue; margin:0 10px;">' + self.myRedspots[i].name + '</h>',
+                    infoBody: '<p style="font-size:0.9rem; margin:5px 10px;">' + self.myRedspots[i].intro + '</p>' + '<img src=\"' + self.myRedspots[i].img + '\" \>',
                     offset: new AMap.Pixel(15, -40),
                     autoMove: true,
                     closeWhenClickMap: true
@@ -133,7 +138,7 @@ export class MapComponent implements AfterViewInit {
                 });
                 /* add hover infoWindow */
                 let titleWindow = new AMap.InfoWindow({
-                    content: '<h style="color:steelblue;">' + self.redspots[i].name + '</h>',
+                    content: '<h style="color:steelblue;">' + self.myRedspots[i].name + '</h>',
                     offset: new AMap.Pixel(15, -40)
                 });
                 myMarker.on('mouseover', function() {
@@ -144,5 +149,23 @@ export class MapComponent implements AfterViewInit {
                 });
             }
         });
+    }
+
+    itemSelected(redspot: Redspot) {
+        let self = this;
+        AMapUI.loadUI(['overlay/SimpleInfoWindow'], function(SimpleInfoWindow) {
+            let infoWindow = new SimpleInfoWindow({
+                infoTitle: '<h style="color:steelblue; margin:0 10px;">' + redspot.name + '</h>',
+                infoBody: '<p style="font-size:0.9rem; margin:5px 10px;">' + redspot.intro + '</p>' + '<img src=\"' + redspot.img + '\" \>',
+                offset: new AMap.Pixel(15, -40),
+                autoMove: true,
+                closeWhenClickMap: true
+            });
+            infoWindow.open(self.mymap, [redspot.geo.lng, redspot.geo.lat]);
+        });
+    }
+
+    mapClicked() {
+        this.side.selectedRedspot = null;
     }
 }

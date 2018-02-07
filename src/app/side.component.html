@@ -1,0 +1,9 @@
+<div id="sidebar">
+    <input #searchBox id="search-box" (keyup)="search(searchBox.value)" placeholder="搜索" required/>
+    <a class="clear" (click)="clearInput()"></a>
+    <ul id="redspot-list">
+        <li *ngFor="let redspot of redspots | async" (click)="onSelected(redspot)" class="redspot-item" [class.selected]="redspot === selectedRedspot">
+            {{redspot.name}}
+        </li>
+    </ul>
+</div>

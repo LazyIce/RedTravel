@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers } from '@angular/http';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/toPromise';
+import 'rxjs/add/operator/map';
 import { Redspot } from './redspot';
 
 @Injectable()
@@ -37,7 +39,7 @@ export class RedspotService {
         return this.http
           .post(this.redspotsUrl, JSON.stringify({name: name}), {headers: this.headers})
           .toPromise()
-          .then(res => res.json().data as Redspot)
+          .then(res => res.json() as Redspot)
           .catch(this.handleError);
     }
 
@@ -48,6 +50,11 @@ export class RedspotService {
           .toPromise()
           .then(() => redspot)
           .catch(this.handleError);
+    }
+
+    search(term: string): Observable<Redspot[]> {
+        return this.http.get(`api/redspots/?name=${term}`)
+                        .map(response => response.json() as Redspot[]);
     }
 
     private handleError(error: any): Promise<any> {
