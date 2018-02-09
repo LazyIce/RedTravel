@@ -13,8 +13,6 @@ export class MapComponent implements AfterViewInit {
     notRedspots: Redspot[];
     myRedspots: Redspot[];
     mymap: any;
-    notMarkerList;
-    myMarkerList;
     @ViewChild(SideComponent)
     private side: SideComponent;
 
@@ -104,14 +102,14 @@ export class MapComponent implements AfterViewInit {
         let self = this;
         this.mymap.clearMap();
         AMapUI.loadUI(['overlay/SvgMarker', 'overlay/SimpleInfoWindow'], function(SvgMarker, SimpleInfoWindow) {
-            let shape = new SvgMarker.Shape.RectangleFlagPin({
+            let flagShape = new SvgMarker.Shape.RectangleFlagPin({
                 height: 50,
                 fillColor: 'red',
                 strokeWidth: '1',
                 strokeColor: 'red'
             });
             for (let i = 0; i < self.myRedspots.length; i++) {
-                let myMarker = new SvgMarker(shape, {
+                let myMarker = new SvgMarker(flagShape, {
                     map: self.mymap,
                     position: [self.myRedspots[i].geo.lng, self.myRedspots[i].geo.lat],
                     iconLabel: {
@@ -148,6 +146,50 @@ export class MapComponent implements AfterViewInit {
                     titleWindow.close();
                 });
             }
+        });
+    }
+
+    addMyRoutes() {
+        let self = this;
+        AMapUI.loadUI(['overlay/AwesomeMarker'], function(AwesomeMarker) {
+            let origin = [121.404691, 31.227892];
+            /* add origin */
+            let marker = new AwesomeMarker({
+                map: self.mymap,
+                position: origin,
+                awesomeIcon: 'building',
+                iconLabel: {
+                    style: {
+                        color: 'yellow'
+                    }
+                },
+                iconStyle: 'blue',
+                animation: 'AMAP_ANIMATION_DROP'
+            });
+            let titleWindow = new AMap.InfoWindow({
+                content: '<h style="color:steelblue;">华东师范大学</h>',
+                offset: new AMap.Pixel(0, -30)
+            });
+            marker.on('mouseover', function() {
+                titleWindow.open(self.mymap, marker.getPosition());
+            });
+            marker.on('mouseout', function() {
+                titleWindow.close();
+            });
+            /* add routes */
+            AMap.service('AMap.Driving', () => {
+                let colors = [
+                    "#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00",
+                    "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707",
+                    "#651067", "#329262", "#5574a6", "#3b3eac"
+                ];
+                for (let i = 0; i < self.myRedspots.length; i++) {
+                    let transfer = new AMap.Driving({
+                        map: self.mymap
+                    });
+                    transfer.search(origin, [self.myRedspots[i].geo.lng, self.myRedspots[i].geo.lat]);
+                }
+            });
         });
     }
 

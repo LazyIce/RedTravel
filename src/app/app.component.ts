@@ -17,6 +17,7 @@ export class AppComponent {
             this.map.addNotMarkers();
         } else if (id === 'history-tab') {
             this.map.addMyMarkers();
+            this.map.addMyRoutes();
         }
     }
 }
