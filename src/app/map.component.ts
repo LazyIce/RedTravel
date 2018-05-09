@@ -75,10 +75,21 @@ export class MapComponent implements AfterViewInit {
                 /* add click infoWindow */
                 let infoWindow = new SimpleInfoWindow({
                     infoTitle: '<h style="color:steelblue; margin:0 10px;">' + self.notRedspots[i].name + '</h>',
-                    infoBody: '<p style="font-size:0.9rem; margin:5px 10px;">' + self.notRedspots[i].intro + '</p>' + '<img src=\"' + self.notRedspots[i].img + '\" \>',
+                    infoBody: '<button class="mytbn-add">添加足迹</button>' + '<p style="font-size:0.9rem; margin:5px 10px;">' + self.notRedspots[i].intro + '</p>' + '<img src=\"' + self.notRedspots[i].img + '\" \>',
                     offset: new AMap.Pixel(0, -30),
                     autoMove: true,
                     closeWhenClickMap: true
+                });
+                infoWindow.get$InfoBody().on('click', '.mytbn-add', function(event) {
+                  let newRedspot = self.redspotService.getRedspot(self.notRedspots[i].id).then(
+                    redspot => {
+                      redspot.status = 1;
+                      self.redspotService.update(redspot);
+                      self.myRedspots.push(self.notRedspots[i]);
+                      self.notRedspots.splice(i, 1);
+                      self.addAllMarkers();
+                    }
+                  );
                 });
                 marker.on('click', function() {
                     infoWindow.open(self.mymap, marker.getPosition());
@@ -126,10 +137,21 @@ export class MapComponent implements AfterViewInit {
                 /* add click infoWindow */
                 let infoWindow = new SimpleInfoWindow({
                     infoTitle: '<h style="color:steelblue; margin:0 10px;">' + self.myRedspots[i].name + '</h>',
-                    infoBody: '<p style="font-size:0.9rem; margin:5px 10px;">' + self.myRedspots[i].intro + '</p>' + '<img src=\"' + self.myRedspots[i].img + '\" \>',
+                    infoBody: '<button class="mybtn-remove">取消足迹</button>' + '<p style="font-size:0.9rem; margin:5px 10px;">' + self.myRedspots[i].intro + '</p>' + '<img src=\"' + self.myRedspots[i].img + '\" \>',
                     offset: new AMap.Pixel(15, -40),
                     autoMove: true,
                     closeWhenClickMap: true
+                });
+                infoWindow.get$InfoBody().on('click', '.mybtn-remove', function(event) {
+                  let newRedspot = self.redspotService.getRedspot(self.myRedspots[i].id).then(
+                    redspot => {
+                      redspot.status = 0;
+                      self.redspotService.update(redspot);
+                      self.notRedspots.push(self.myRedspots[i]);
+                      self.myRedspots.splice(i, 1);
+                      self.addAllMarkers();
+                    }
+                  );
                 });
                 myMarker.on('click', function() {
                     infoWindow.open(self.mymap, myMarker.getPosition());
