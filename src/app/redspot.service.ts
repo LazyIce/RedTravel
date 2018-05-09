@@ -44,7 +44,7 @@ export class RedspotService {
     }
 
     update(redspot: Redspot): Promise<Redspot> {
-        const url = `${this.redspotsUrl}/${redspot.name}`;
+        const url = `${this.redspotsUrl}/${redspot.id}`;
         return this.http
           .put(url, JSON.stringify(redspot), {headers: this.headers})
           .toPromise()
